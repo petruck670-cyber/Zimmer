@@ -56,15 +56,78 @@
         .smiley-btn { flex: 1; padding: 6px; font-size: 0.8rem; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; }
         .smiley-btn.selected { background: #ffeaa7; border-color: #fdcb6e; font-weight: bold; }
         
-        .sync-status { font-size: 12px; color: #636e72; margin-bottom: 10px; font-weight: 600; text-align: center; }
+        .sync-status { font-size: 12px; color: #059669; margin-bottom: 10px; font-weight: 600; text-align: center; }
     </style>
+
+    <!-- Firebase SDKs einbinden -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAlGu3VqshTh85dH-fsU7FDnJtklV46k5A",
+            authDomain: "wochenplan-f3735.firebaseapp.com",
+            projectId: "wochenplan-f3735",
+            storageBucket: "wochenplan-f3735.appspot.com",
+            messagingSenderId: "862358870805",
+            appId: "1:862358870805:web:efeef5d4bf07111a5ffcfb",
+            measurementId: "G-31QQ9XHZL3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const docRef = doc(db, "apps", "zimmerplaner");
+
+        let isUpdatingFromRemote = false;
+
+        window.loadCloudData = async function() {
+            try {
+                const snap = await getDoc(docRef);
+                if (snap.exists()) {
+                    isUpdatingFromRemote = true;
+                    appData = snap.data();
+                    updateAllUI();
+                    isUpdatingFromRemote = false;
+                }
+            } catch(e) { console.error(e); }
+        };
+
+        window.saveCloudData = async function() {
+            if (isUpdatingFromRemote) return;
+            let statusEl = document.getElementById('syncStatus');
+            if (statusEl) statusEl.innerText = "☁️ Speichert in Cloud...";
+
+            try {
+                await setDoc(docRef, appData);
+                if (statusEl) statusEl.innerText = "⚡ Firebase Live-Sync aktiv";
+            } catch(e) {
+                if (statusEl) statusEl.innerText = "❌ Fehler beim Speichern zur Cloud";
+            }
+        };
+
+        onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const remoteData = docSnap.data();
+                if (JSON.stringify(appData) !== JSON.stringify(remoteData)) {
+                    isUpdatingFromRemote = true;
+                    appData = remoteData;
+                    updateAllUI();
+                    isUpdatingFromRemote = false;
+                }
+            }
+        });
+
+        window.initFirebaseApp = function() {
+            loadCloudData();
+        };
+    </script>
 </head>
 <body>
 
 <div class="container">
     <h1>🥷 Lego Ninjago Zimmer-Planer ⚔️</h1>
     
-    <div id="syncStatus" class="sync-status">📱 Lokaler Offline-Modus aktiv</div>
+    <div id="syncStatus" class="sync-status">⚡ Firebase Live-Sync aktiv</div>
 
     <!-- Wochentage Auswahl -->
     <div class="days-container" id="daySelector">
@@ -189,35 +252,13 @@
         }
     };
 
-    function loadLocalData() {
-        let saved = localStorage.getItem('ninjago_planer_local');
-        if (saved) {
-            try {
-                let parsed = JSON.parse(saved);
-                if (parsed && parsed.totalPoints !== undefined) {
-                    appData = parsed;
-                }
-            } catch(e) {}
-        }
-    }
-
-    function saveLocalData() {
-        localStorage.setItem('ninjago_planer_local', JSON.stringify(appData));
-        updateAllUI();
-    }
-
-    function initApp() {
-        loadLocalData();
-        updateAllUI();
-    }
-
     function updateAllUI() {
         document.getElementById('totalPoints').innerText = appData.totalPoints;
         document.getElementById('penaltyPoints').innerText = appData.penaltyPoints || 0;
         document.getElementById('reducePenaltyBtn').innerText = `🥋 Mit ${appData.penaltyCost || 30} Pkt abbauen (-${appData.penaltyReduction || 10})`;
         renderRewardsList();
         renderPenaltyShopList();
-        switchDay(activeDay);
+        switchDay(activeDay, true);
     }
 
     function toggleParentBox() {
@@ -227,7 +268,7 @@
         else { content.style.display = 'block'; icon.innerText = '▲ Zuklappen'; }
     }
 
-    function switchDay(day) {
+    function switchDay(day, keepInputs = false) {
         activeDay = day;
         document.querySelectorAll('.day-btn').forEach(btn => {
             if(btn.dataset.day === day) btn.classList.add('active'); else btn.classList.remove('active');
@@ -237,8 +278,10 @@
         const dayData = appData.weekData[day];
         const tasks = dayData.tasks;
         for(let i = 0; i < 3; i++) {
-            document.getElementById(`t${i}_name`).value = tasks[i].name;
-            document.getElementById(`t${i}_points`).value = tasks[i].points > 0 ? tasks[i].points : '';
+            if (!keepInputs) {
+                document.getElementById(`t${i}_name`).value = tasks[i].name;
+                document.getElementById(`t${i}_points`).value = tasks[i].points > 0 ? tasks[i].points : '';
+            }
             let val = tasks[i].status === 'open' || tasks[i].status === 'submitted' ? 'pending' : tasks[i].status;
             document.getElementById(`eval_${i}`).value = val;
         }
@@ -344,7 +387,7 @@
             tasks.push({ name, points, status: existing.status, awardedPoints: existing.awardedPoints, penaltyAdded: existing.penaltyAdded || 0 });
         }
         appData.weekData[activeDay].tasks = tasks;
-        saveLocalData();
+        saveCloudData();
     }
 
     function setNoTasksForDay() {
@@ -353,15 +396,15 @@
             {name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0},
             {name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0}
         ];
-        saveLocalData();
+        saveCloudData();
     }
 
-    function updateBonusName(val) { appData.weekData[activeDay].bonusTask.name = val; saveLocalData(); }
-    function submitTaskForReview(index) { appData.weekData[activeDay].tasks[index].status = 'submitted'; saveLocalData(); }
+    function updateBonusName(val) { appData.weekData[activeDay].bonusTask.name = val; saveCloudData(); }
+    function submitTaskForReview(index) { appData.weekData[activeDay].tasks[index].status = 'submitted'; saveCloudData(); }
     function submitBonusForReview() { 
         if(!appData.weekData[activeDay].bonusTask.name) return; 
         appData.weekData[activeDay].bonusTask.status = 'submitted'; 
-        saveLocalData(); 
+        saveCloudData(); 
     }
 
     function parentConfirmAllWithPin() {
@@ -389,7 +432,8 @@
             else { dayData.bonusTask.status = 'open'; }
         }
 
-        saveLocalData();
+        saveCloudData();
+        updateAllUI();
         alert("Bewertung gespeichert!");
     }
 
@@ -400,7 +444,8 @@
             appData.weekData[day].tasks.forEach(t => { t.name = ""; t.points = 0; t.status = "open"; t.awardedPoints = 0; t.penaltyAdded = 0; });
             if (appData.weekData[day].bonusTask) appData.weekData[day].bonusTask = { name: "", status: "open", awardedPoints: 0 };
         }
-        saveLocalData();
+        saveCloudData();
+        updateAllUI();
         alert("Woche zurückgesetzt!");
     }
 
@@ -412,7 +457,8 @@
         if (enteredPin !== PARENT_PIN) return;
         appData.totalPoints -= cost;
         appData.penaltyPoints = Math.max(0, appData.penaltyPoints - red);
-        saveLocalData();
+        saveCloudData();
+        updateAllUI();
     }
 
     function redeemReward(pointsNeeded, rewardName) {
@@ -420,7 +466,8 @@
         const enteredPin = prompt("Eltern-PIN (1985) eingeben:");
         if (enteredPin !== PARENT_PIN) return;
         appData.totalPoints -= pointsNeeded;
-        saveLocalData();
+        saveCloudData();
+        updateAllUI();
         alert(`Prämie "${rewardName}" eingelöst!`);
     }
 
@@ -429,7 +476,8 @@
         const enteredPin = prompt("Eltern-PIN (1985) eingeben:");
         if (enteredPin !== PARENT_PIN) return;
         appData.penaltyPoints -= pointsNeeded;
-        saveLocalData();
+        saveCloudData();
+        updateAllUI();
         alert(`Erfolgreich eingelöst: "${rewardName}".`);
     }
 
@@ -443,11 +491,11 @@
         if (choice === "1") {
             const pInput = prompt("Punkte:"); const nameInput = prompt("Beschreibung:");
             const p = parseInt(pInput);
-            if (!isNaN(p) && nameInput) { appData.rewards.push({ points: p, text: nameInput.trim() }); saveLocalData(); }
+            if (!isNaN(p) && nameInput) { appData.rewards.push({ points: p, text: nameInput.trim() }); saveCloudData(); updateAllUI(); }
         } else if (choice === "2") {
             const indexInput = prompt("Nummer zum Löschen:");
             const idx = parseInt(indexInput) - 1;
-            if (!isNaN(idx) && idx >= 0 && idx < appData.rewards.length) { appData.rewards.splice(idx, 1); saveLocalData(); }
+            if (!isNaN(idx) && idx >= 0 && idx < appData.rewards.length) { appData.rewards.splice(idx, 1); saveCloudData(); updateAllUI(); }
         }
     }
 
@@ -461,11 +509,11 @@
         if (choice === "1") {
             const pInput = prompt("Strafpunkte:"); const nameInput = prompt("Beschreibung:");
             const p = parseInt(pInput);
-            if (!isNaN(p) && nameInput) { appData.penaltyRewards.push({ points: p, text: nameInput.trim() }); saveLocalData(); }
+            if (!isNaN(p) && nameInput) { appData.penaltyRewards.push({ points: p, text: nameInput.trim() }); saveCloudData(); updateAllUI(); }
         } else if (choice === "2") {
             const indexInput = prompt("Nummer zum Löschen:");
             const idx = parseInt(indexInput) - 1;
-            if (!isNaN(idx) && idx >= 0 && idx < appData.penaltyRewards.length) { appData.penaltyRewards.splice(idx, 1); saveLocalData(); }
+            if (!isNaN(idx) && idx >= 0 && idx < appData.penaltyRewards.length) { appData.penaltyRewards.splice(idx, 1); saveCloudData(); updateAllUI(); }
         }
     }
 
@@ -473,15 +521,17 @@
         const enteredPin = prompt("Eltern-PIN eingeben:");
         if (enteredPin !== PARENT_PIN) return;
         const action = prompt(`Strafkonto-Verwaltung:\n[1] Strafpunkte auf 0 setzen (Reset)\n[2] Strafpunkte manuell ändern`);
-        if (action === "1") { appData.penaltyPoints = 0; saveLocalData(); alert("Zurückgesetzt!"); } 
+        if (action === "1") { appData.penaltyPoints = 0; saveCloudData(); updateAllUI(); alert("Zurückgesetzt!"); } 
         else if (action === "2") {
             const newVal = prompt("Neuer Wert (Max 200):", appData.penaltyPoints);
             const parsed = parseInt(newVal);
-            if (!isNaN(parsed)) { appData.penaltyPoints = Math.min(200, Math.max(0, parsed)); saveLocalData(); }
+            if (!isNaN(parsed)) { appData.penaltyPoints = Math.min(200, Math.max(0, parsed)); saveCloudData(); updateAllUI(); }
         }
     }
 
-    initApp();
+    window.onload = function() {
+        window.initFirebaseApp();
+    };
 </script>
 
 </body>
