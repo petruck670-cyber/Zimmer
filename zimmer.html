@@ -229,7 +229,7 @@
             </div>
 
             <div style="margin-top: 15px; border-top: 1px solid #fab1a0; padding-top: 10px;">
-                <button class="action-btn btn-danger" onclick="resetWeekForNewPlan()">🔄 Neuen Wochenplan erstellen (Alle Felder leeren)</button>
+                <button class="action-btn btn-danger" onclick="resetWeekForNewPlan()">🔄 Neuen Wochenplan erstellen (Alle Tage leeren)</button>
             </div>
         </div>
     </div>
@@ -562,22 +562,26 @@
     }
 
     function resetWeekForNewPlan() {
-        const enteredPin = prompt("Eltern-PIN eingeben (Leert alle Aufgaben für einen neuen Plan):");
+        const enteredPin = prompt("Eltern-PIN eingeben (Leert alle Wochentage für einen neuen Plan):");
         if (enteredPin !== PARENT_PIN) { if(enteredPin !== null) alert("Falsche PIN!"); return; }
         
-        for (let day in appData.weekData) {
-            appData.weekData[day].tasks = [
-                { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 },
-                { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 },
-                { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }
-            ];
-            appData.weekData[day].bonusTask = { name: "", status: "open", awardedPoints: 0 };
-            appData.weekData[day].requireDayPhoto = false;
-            appData.weekData[day].dayPhoto = "";
-        }
+        const alleTage = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+        alleTage.forEach(day => {
+            appData.weekData[day] = {
+                tasks: [
+                    { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 },
+                    { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 },
+                    { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }
+                ],
+                bonusTask: { name: "", status: "open", awardedPoints: 0 },
+                requireDayPhoto: false,
+                dayPhoto: ""
+            };
+        });
+
         saveCloudData();
         updateAllUI();
-        alert("Alle Aufgaben wurden geleert! Du kannst nun den neuen Plan eintragen.");
+        alert("Alle Tage wurden erfolgreich geleert! Du kannst nun den neuen Plan eintragen.");
     }
 
     function reducePenaltyWithPoints() {
