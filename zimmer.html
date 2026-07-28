@@ -56,82 +56,15 @@
         .smiley-btn { flex: 1; padding: 6px; font-size: 0.8rem; border: 1px solid #ccc; background: white; border-radius: 6px; cursor: pointer; }
         .smiley-btn.selected { background: #ffeaa7; border-color: #fdcb6e; font-weight: bold; }
         
-        .sync-status { font-size: 12px; color: #059669; margin-bottom: 10px; font-weight: 600; text-align: center; }
-
-        /* Bild-Vollbild Modal */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
-        .modal img { max-width: 90%; max-height: 90%; border-radius: 8px; border: 3px solid white; }
-        .modal-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; }
-        
-        .photo-preview { width: 80px; height: 80px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid #fdcb6e; margin-top: 5px; }
-        
-        /* Kamera-Button Design */
-        .camera-btn { background: #0984e3; color: white; padding: 10px 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 0.9rem; margin-top: 10px; display: block; text-align: center; box-sizing: border-box; }
+        .sync-status { font-size: 12px; color: #636e72; margin-bottom: 10px; font-weight: 600; text-align: center; }
     </style>
-
-    <!-- Firebase SDKs einbinden -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAlGu3VqshTh85dH-fsU7FDnJtklV46k5A",
-            authDomain: "wochenplan-f3735.firebaseapp.com",
-            projectId: "wochenplan-f3735",
-            storageBucket: "wochenplan-f3735.appspot.com",
-            messagingSenderId: "862358870805",
-            appId: "1:862358870805:web:efeef5d4bf07111a5ffcfb",
-            measurementId: "G-31QQ9XHZL3"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const docRef = doc(db, "apps", "zimmerplaner");
-
-        let isUpdatingFromRemote = false;
-
-        window.loadCloudData = async function() {
-            try {
-                const snap = await getDoc(docRef);
-                if (snap.exists()) {
-                    isUpdatingFromRemote = true;
-                    appData = snap.data();
-                    updateAllUI();
-                    isUpdatingFromRemote = false;
-                }
-            } catch(e) { console.error(e); }
-        };
-
-        window.saveCloudData = async function() {
-            if (isUpdatingFromRemote) return;
-            try {
-                await setDoc(docRef, appData);
-            } catch(e) { console.error(e); }
-        };
-
-        onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-                const remoteData = docSnap.data();
-                if (JSON.stringify(appData) !== JSON.stringify(remoteData)) {
-                    isUpdatingFromRemote = true;
-                    appData = remoteData;
-                    updateAllUI();
-                    isUpdatingFromRemote = false;
-                }
-            }
-        });
-
-        window.initFirebaseApp = function() {
-            loadCloudData();
-        };
-    </script>
 </head>
 <body>
 
 <div class="container">
     <h1>🥷 Lego Ninjago Zimmer-Planer ⚔️</h1>
     
-    <div id="syncStatus" class="sync-status">⚡ Firebase Live-Sync aktiv</div>
+    <div id="syncStatus" class="sync-status">📱 Lokaler Offline-Modus aktiv</div>
 
     <!-- Wochentage Auswahl -->
     <div class="days-container" id="daySelector">
@@ -200,25 +133,13 @@
                 <input type="text" id="t2_points" placeholder="Punkte">
             </div>
 
-            <div style="margin-top: 8px; margin-bottom: 8px; padding: 8px; background: #fffdf0; border: 1px dashed #f39c12; border-radius: 6px;">
-                <label style="font-size:0.8rem; font-weight:bold; color:#d35400;">⭐ Bonus-Aufgabe (Fix 8 Pkt):</label>
-                <input type="text" id="bonus_config_name" placeholder="Name der Bonus-Aufgabe">
-            </div>
-
-            <!-- Tages-Foto Anforderung -->
-            <div style="margin-top: 10px; margin-bottom: 12px; padding: 8px; background: #e3f2fd; border: 1px solid #90caf9; border-radius: 6px;">
-                <label style="font-size:0.85rem; font-weight:bold; color:#1976d2; display:flex; align-items:center; gap:6px; cursor:pointer;">
-                    <input type="checkbox" id="day_reqPhoto" style="width:16px; height:16px;"> 📸 Tages-Beweisfoto (Gesamt-Zimmer) für diesen Tag erforderlich
-                </label>
-            </div>
-
             <div style="display:flex; gap:8px;">
                 <button class="action-btn btn-pink" style="flex:2;" onclick="saveTaskConfig()">Aufgaben speichern</button>
                 <button class="action-btn btn-danger" style="flex:1; background:#636e72;" onclick="setNoTasksForDay()">🚫 Keine Aufgaben</button>
             </div>
 
             <div style="margin-top: 15px; border-top: 1px solid #fab1a0; padding-top: 10px;">
-                <label style="font-size:0.85rem; font-weight:bold; color:#c0392b;">🔒 Meister-Sammelprüfung für diesen Tag:</label>
+                <label style="font-size:0.85rem; font-weight:bold; color:#c0392b;">🔒 Meister-Sammelprüfung für diesen Tag (PIN):</label>
                 <div style="margin-top:5px; font-size:0.8rem;">
                     <div>Aufgabe 1: <select id="eval_0"><option value="pending">Ausstehend</option><option value="approved">Voll erfüllt</option><option value="partial">Teilweise (halb)</option><option value="rejected">Ablehnen (+Strafpunkte)</option></select></div>
                     <div>Aufgabe 2: <select id="eval_1"><option value="pending">Ausstehend</option><option value="approved">Voll erfüllt</option><option value="partial">Teilweise (halb)</option><option value="rejected">Ablehnen (+Strafpunkte)</option></select></div>
@@ -229,24 +150,13 @@
             </div>
 
             <div style="margin-top: 15px; border-top: 1px solid #fab1a0; padding-top: 10px;">
-                <button class="action-btn btn-danger" onclick="resetWeekForNewPlan()">🔄 Neuen Wochenplan erstellen (Alle Tage leeren)</button>
+                <button class="action-btn btn-danger" onclick="resetWeekForNewPlan()">🔄 Woche zurücksetzen (für neuen Plan)</button>
             </div>
         </div>
     </div>
 
     <!-- Aufgaben Container für das Kind -->
     <div id="tasksContainer"></div>
-
-    <!-- Ninjago Ziel Fortschritt -->
-    <div class="box" style="margin-top:15px; background:#fffaf0; border-color:#f39c12;">
-        <div class="box-title" style="color:#d35400;">🔥 Ninja-Ziel: <span id="legoScore">108</span> / 600 Pkt</div>
-    </div>
-</div>
-
-<!-- Bild-Vollbild Modal -->
-<div id="imageModal" class="modal" onclick="closeModal()">
-    <span class="modal-close">&times;</span>
-    <img id="modalImage" src="" alt="Großansicht">
 </div>
 
 <script>
@@ -269,24 +179,45 @@
             { points: 100, text: "Samstag ohne Handy / PC ab 20 Uhr 📵" }
         ],
         weekData: {
-            Mo: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 }, requireDayPhoto: true, dayPhoto: "" },
-            Di: { tasks: [{ name: "Müll rausbringen", points: 5, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 }, requireDayPhoto: false, dayPhoto: "" },
-            Mi: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 }, requireDayPhoto: true, dayPhoto: "" },
-            Do: { tasks: [{ name: "Schreibtisch aufräumen", points: 5, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 }, requireDayPhoto: false, dayPhoto: "" },
-            Fr: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 }, requireDayPhoto: false, dayPhoto: "" },
-            Sa: { tasks: [{ name: "Garten helfen", points: 10, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 }, requireDayPhoto: false, dayPhoto: "" },
-            So: { tasks: [{ name: "Ausruhen / Aufräumen", points: 3, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 }, requireDayPhoto: false, dayPhoto: "" }
+            Mo: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            Di: { tasks: [{ name: "Müll rausbringen", points: 5, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            Mi: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            Do: { tasks: [{ name: "Schreibtisch aufräumen", points: 5, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            Fr: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            Sa: { tasks: [{ name: "Garten helfen", points: 10, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            So: { tasks: [{ name: "Ausruhen / Aufräumen", points: 3, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } }
         }
     };
 
+    function loadLocalData() {
+        let saved = localStorage.getItem('ninjago_planer_local');
+        if (saved) {
+            try {
+                let parsed = JSON.parse(saved);
+                if (parsed && parsed.totalPoints !== undefined) {
+                    appData = parsed;
+                }
+            } catch(e) {}
+        }
+    }
+
+    function saveLocalData() {
+        localStorage.setItem('ninjago_planer_local', JSON.stringify(appData));
+        updateAllUI();
+    }
+
+    function initApp() {
+        loadLocalData();
+        updateAllUI();
+    }
+
     function updateAllUI() {
         document.getElementById('totalPoints').innerText = appData.totalPoints;
-        document.getElementById('legoScore').innerText = appData.totalPoints;
         document.getElementById('penaltyPoints').innerText = appData.penaltyPoints || 0;
         document.getElementById('reducePenaltyBtn').innerText = `🥋 Mit ${appData.penaltyCost || 30} Pkt abbauen (-${appData.penaltyReduction || 10})`;
         renderRewardsList();
         renderPenaltyShopList();
-        switchDay(activeDay, true);
+        switchDay(activeDay);
     }
 
     function toggleParentBox() {
@@ -296,7 +227,7 @@
         else { content.style.display = 'block'; icon.innerText = '▲ Zuklappen'; }
     }
 
-    function switchDay(day, keepInputs = false) {
+    function switchDay(day) {
         activeDay = day;
         document.querySelectorAll('.day-btn').forEach(btn => {
             if(btn.dataset.day === day) btn.classList.add('active'); else btn.classList.remove('active');
@@ -306,17 +237,10 @@
         const dayData = appData.weekData[day];
         const tasks = dayData.tasks;
         for(let i = 0; i < 3; i++) {
-            if (!keepInputs) {
-                document.getElementById(`t${i}_name`).value = tasks[i].name;
-                document.getElementById(`t${i}_points`).value = tasks[i].points > 0 ? tasks[i].points : '';
-            }
+            document.getElementById(`t${i}_name`).value = tasks[i].name;
+            document.getElementById(`t${i}_points`).value = tasks[i].points > 0 ? tasks[i].points : '';
             let val = tasks[i].status === 'open' || tasks[i].status === 'submitted' ? 'pending' : tasks[i].status;
             document.getElementById(`eval_${i}`).value = val;
-        }
-
-        if (!keepInputs) {
-            document.getElementById('bonus_config_name').value = dayData.bonusTask ? dayData.bonusTask.name : '';
-            document.getElementById('day_reqPhoto').checked = !!dayData.requireDayPhoto;
         }
 
         let bonusVal = dayData.bonusTask && (dayData.bonusTask.status === 'open' || dayData.bonusTask.status === 'submitted') ? 'pending' : (dayData.bonusTask ? dayData.bonusTask.status : 'pending');
@@ -337,7 +261,7 @@
             hasActiveTasks = true;
 
             let btnClass = "action-btn btn-green";
-            let btnText = "⚔️ Mission erfüllt!";
+            let btnText = "⚔️ Mission erfüllt & bereit für Prüfung!";
             if(task.status === 'submitted') { btnClass = "action-btn btn-disabled"; btnText = "⏳ Wartet auf Meister-Prüfung..."; } 
             else if(task.status === 'approved' || task.status === 'partial') { btnClass = "action-btn btn-disabled"; btnText = "✅ Geprüft & Punkte gutgeschrieben!"; } 
             else if(task.status === 'rejected') { btnClass = "action-btn btn-danger"; btnText = "❌ Abgelehnt – Neu einreichen"; }
@@ -357,96 +281,26 @@
             container.appendChild(card);
         });
 
-        // Tages-Foto Box (falls für diesen Tag aktiviert)
-        if (dayData.requireDayPhoto) {
-            let photoDisplay = dayData.dayPhoto ? 
-                `<div style="margin-top:8px; text-align:center;"><span style="font-size:0.8rem; color:#059669; font-weight:bold;">✅ Tages-Beweisfoto hochgeladen (zum Vergrößern anklicken):</span><br><img src="${dayData.dayPhoto}" class="photo-preview" onclick="openModal('${dayData.dayPhoto}')"></div>` : 
-                `<div style="font-size:0.8rem; color:#c0392b; margin-top:4px; text-align:center;">⚠️ Für heute ist ein Gesamt-Beweisfoto erforderlich!</div>`;
-
-            const dayPhotoCard = document.createElement('div');
-            dayPhotoCard.className = 'box';
-            dayPhotoCard.style.background = '#f0f9ff';
-            dayPhotoCard.style.borderColor = '#0284c7';
-            dayPhotoCard.innerHTML = `
-                <div class="box-title" style="color:#0284c7;">📸 Tages-Beweisfoto (Gesamt-Zimmer)</div>
-                ${photoDisplay}
-                <label class="camera-btn" style="background:#0284c7;">📸 Tages-Foto aufnehmen / hochladen
-                    <input type="file" accept="image/*" capture="environment" onchange="handleDayPhotoUpload(event)" style="display:none;">
-                </label>
-            `;
-            container.appendChild(dayPhotoCard);
-        }
-
         if (!dayData.bonusTask) dayData.bonusTask = { name: "", status: "open", awardedPoints: 0 };
         let bTask = dayData.bonusTask;
-        if(bTask.name && bTask.name.trim()) {
-            let bBtnClass = "action-btn btn-green";
-            let bBtnText = "⭐ Bonus-Aufgabe einreichen (+8 Pkt)!";
-            if(bTask.status === 'submitted') { bBtnClass = "action-btn btn-disabled"; bBtnText = "⏳ Bonus wartet auf Prüfung..."; } 
-            else if(bTask.status === 'approved' || bTask.status === 'partial') { bBtnClass = "action-btn btn-disabled"; bBtnText = "✅ Bonus geprüft!"; }
+        let bBtnClass = "action-btn btn-green";
+        let bBtnText = "⭐ Bonus-Aufgabe einreichen (+8 Pkt)!";
+        if(bTask.status === 'submitted') { bBtnClass = "action-btn btn-disabled"; bBtnText = "⏳ Bonus wartet auf Prüfung..."; } 
+        else if(bTask.status === 'approved' || bTask.status === 'partial') { bBtnClass = "action-btn btn-disabled"; bBtnText = "✅ Bonus geprüft!"; }
 
-            const bonusCard = document.createElement('div');
-            bonusCard.className = 'bonus-card';
-            bonusCard.innerHTML = `
-                <div style="font-weight:bold; color:#d35400; font-size:0.95rem; margin-bottom:6px;">⭐ Bonus-Aufgabe (8 Pkt)</div>
-                <div style="font-size:0.85rem; margin-bottom:6px;">${bTask.name}</div>
-                <button class="${bBtnClass}" style="font-size:0.85rem; padding:8px; margin-top:8px;" ${bTask.status === 'approved' || bTask.status === 'partial' || bTask.status === 'submitted' ? 'disabled' : ''} onclick="submitBonusForReview()">${bBtnText}</button>
-            `;
-            container.appendChild(bonusCard);
-        }
-
-        if(!hasActiveTasks && (!bTask.name || !bTask.name.trim()) && !dayData.requireDayPhoto) {
-            container.innerHTML = `<div class="box" style="text-align:center; color:#636e72;">Keine Aufgaben für diesen Tag. ⛩️</div>`;
-        }
+        const bonusCard = document.createElement('div');
+        bonusCard.className = 'bonus-card';
+        bonusCard.innerHTML = `
+            <div style="font-weight:bold; color:#d35400; font-size:0.95rem; margin-bottom:6px;">⭐ Bonus-Aufgabe (Freiwillig, 8 Pkt)</div>
+            <input type="text" id="bonusTaskInput" placeholder="Extraleistung eintragen..." value="${bTask.name || ''}" ${bTask.status === 'approved' || bTask.status === 'partial' || bTask.status === 'submitted' ? 'disabled' : ''} oninput="updateBonusName(this.value)">
+            <button class="${bBtnClass}" style="font-size:0.85rem; padding:8px; margin-top:8px;" ${bTask.status === 'approved' || bTask.status === 'partial' || bTask.status === 'submitted' ? 'disabled' : ''} onclick="submitBonusForReview()">${bBtnText}</button>
+        `;
+        container.appendChild(bonusCard);
     }
 
     function selectSmiley(btn, type) {
         btn.parentElement.querySelectorAll('.smiley-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
-    }
-
-    function handleDayPhotoUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 900;
-                const MAX_HEIGHT = 900;
-                let width = img.width;
-                let height = img.height;
-
-                if (width > height) {
-                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                } else {
-                    if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-
-                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.75);
-                appData.weekData[activeDay].dayPhoto = compressedDataUrl;
-                saveCloudData();
-                renderTasksForChild();
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function openModal(imgSrc) {
-        document.getElementById('modalImage').src = imgSrc;
-        document.getElementById('imageModal').style.display = 'flex';
-    }
-
-    function closeModal() {
-        document.getElementById('imageModal').style.display = 'none';
     }
 
     function renderRewardsList() {
@@ -490,49 +344,28 @@
             tasks.push({ name, points, status: existing.status, awardedPoints: existing.awardedPoints, penaltyAdded: existing.penaltyAdded || 0 });
         }
         appData.weekData[activeDay].tasks = tasks;
-
-        const bonusName = document.getElementById('bonus_config_name').value.trim();
-        const existingBonus = appData.weekData[activeDay].bonusTask || { status: "open", awardedPoints: 0 };
-        appData.weekData[activeDay].bonusTask = { name: bonusName, status: existingBonus.status, awardedPoints: existingBonus.awardedPoints };
-
-        appData.weekData[activeDay].requireDayPhoto = document.getElementById('day_reqPhoto').checked;
-
-        saveCloudData();
-        alert("Aufgaben für " + activeDay + " gespeichert!");
+        saveLocalData();
     }
 
     function setNoTasksForDay() {
-        appData.weekData[activeDay] = {
-            tasks: [{name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0},{name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0},{name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0}],
-            bonusTask: {name:"",status:"open",awardedPoints:0},
-            requireDayPhoto: false,
-            dayPhoto: ""
-        };
-        saveCloudData();
-        switchDay(activeDay);
+        appData.weekData[activeDay].tasks = [
+            {name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0},
+            {name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0},
+            {name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0}
+        ];
+        saveLocalData();
     }
 
-    function submitTaskForReview(index) {
-        const dayData = appData.weekData[activeDay];
-        if (dayData.requireDayPhoto && !dayData.dayPhoto) {
-            alert("Für diesen Tag ist ein Gesamt-Beweisfoto des Zimmers erforderlich! Bitte nimm erst ein Foto auf.");
-            return;
-        }
-        dayData.tasks[index].status = 'submitted'; 
-        saveCloudData(); 
-        renderTasksForChild(); 
-    }
-
+    function updateBonusName(val) { appData.weekData[activeDay].bonusTask.name = val; saveLocalData(); }
+    function submitTaskForReview(index) { appData.weekData[activeDay].tasks[index].status = 'submitted'; saveLocalData(); }
     function submitBonusForReview() { 
-        const bTask = appData.weekData[activeDay].bonusTask;
-        if(!bTask.name) return; 
-        bTask.status = 'submitted'; 
-        saveCloudData(); 
-        renderTasksForChild();
+        if(!appData.weekData[activeDay].bonusTask.name) return; 
+        appData.weekData[activeDay].bonusTask.status = 'submitted'; 
+        saveLocalData(); 
     }
 
     function parentConfirmAllWithPin() {
-        const enteredPin = prompt("Eltern-PIN eingeben:");
+        const enteredPin = prompt("Eltern-PIN (1985) eingeben:");
         if (enteredPin !== PARENT_PIN) { if(enteredPin !== null) alert("Falsche PIN!"); return; }
 
         let dayData = appData.weekData[activeDay];
@@ -556,63 +389,47 @@
             else { dayData.bonusTask.status = 'open'; }
         }
 
-        saveCloudData();
-        updateAllUI();
+        saveLocalData();
         alert("Bewertung gespeichert!");
     }
 
     function resetWeekForNewPlan() {
-        const enteredPin = prompt("Eltern-PIN eingeben (Leert alle Wochentage für einen neuen Plan):");
-        if (enteredPin !== PARENT_PIN) { if(enteredPin !== null) alert("Falsche PIN!"); return; }
-        
-        const alleTage = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
-        alleTage.forEach(day => {
-            appData.weekData[day] = {
-                tasks: [
-                    { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 },
-                    { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 },
-                    { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }
-                ],
-                bonusTask: { name: "", status: "open", awardedPoints: 0 },
-                requireDayPhoto: false,
-                dayPhoto: ""
-            };
-        });
-
-        saveCloudData();
-        updateAllUI();
-        alert("Alle Tage wurden erfolgreich geleert! Du kannst nun den neuen Plan eintragen.");
+        const enteredPin = prompt("Eltern-PIN (1985) eingeben:");
+        if (enteredPin !== PARENT_PIN) return;
+        for (let day in appData.weekData) {
+            appData.weekData[day].tasks.forEach(t => { t.name = ""; t.points = 0; t.status = "open"; t.awardedPoints = 0; t.penaltyAdded = 0; });
+            if (appData.weekData[day].bonusTask) appData.weekData[day].bonusTask = { name: "", status: "open", awardedPoints: 0 };
+        }
+        saveLocalData();
+        alert("Woche zurückgesetzt!");
     }
 
     function reducePenaltyWithPoints() {
         let cost = appData.penaltyCost || 30;
         let red = appData.penaltyReduction || 10;
         if (appData.totalPoints < cost) { alert(`Zu wenig Punkte! (Mindestens ${cost} benötigt)`); return; }
-        const enteredPin = prompt("Eltern-PIN eingeben:");
+        const enteredPin = prompt("Eltern-PIN (1985) eingeben:");
         if (enteredPin !== PARENT_PIN) return;
         appData.totalPoints -= cost;
         appData.penaltyPoints = Math.max(0, appData.penaltyPoints - red);
-        saveCloudData();
-        updateAllUI();
+        saveLocalData();
     }
 
     function redeemReward(pointsNeeded, rewardName) {
         if (appData.totalPoints < pointsNeeded) { alert(`Nicht genug Punkte! Du hast ${appData.totalPoints} Pkt.`); return; }
-        const enteredPin = prompt("Eltern-PIN eingeben:");
+        const enteredPin = prompt("Eltern-PIN (1985) eingeben:");
         if (enteredPin !== PARENT_PIN) return;
         appData.totalPoints -= pointsNeeded;
-        saveCloudData();
-        updateAllUI();
+        saveLocalData();
         alert(`Prämie "${rewardName}" eingelöst!`);
     }
 
     function redeemPenaltyReward(pointsNeeded, rewardName) {
         if (appData.penaltyPoints < pointsNeeded) { alert(`Das reicht nicht! Du hast nur ${appData.penaltyPoints} Strafpunkte.`); return; }
-        const enteredPin = prompt("Eltern-PIN eingeben:");
+        const enteredPin = prompt("Eltern-PIN (1985) eingeben:");
         if (enteredPin !== PARENT_PIN) return;
         appData.penaltyPoints -= pointsNeeded;
-        saveCloudData();
-        updateAllUI();
+        saveLocalData();
         alert(`Erfolgreich eingelöst: "${rewardName}".`);
     }
 
@@ -626,11 +443,11 @@
         if (choice === "1") {
             const pInput = prompt("Punkte:"); const nameInput = prompt("Beschreibung:");
             const p = parseInt(pInput);
-            if (!isNaN(p) && nameInput) { appData.rewards.push({ points: p, text: nameInput.trim() }); saveCloudData(); updateAllUI(); }
+            if (!isNaN(p) && nameInput) { appData.rewards.push({ points: p, text: nameInput.trim() }); saveLocalData(); }
         } else if (choice === "2") {
             const indexInput = prompt("Nummer zum Löschen:");
             const idx = parseInt(indexInput) - 1;
-            if (!isNaN(idx) && idx >= 0 && idx < appData.rewards.length) { appData.rewards.splice(idx, 1); saveCloudData(); updateAllUI(); }
+            if (!isNaN(idx) && idx >= 0 && idx < appData.rewards.length) { appData.rewards.splice(idx, 1); saveLocalData(); }
         }
     }
 
@@ -644,11 +461,11 @@
         if (choice === "1") {
             const pInput = prompt("Strafpunkte:"); const nameInput = prompt("Beschreibung:");
             const p = parseInt(pInput);
-            if (!isNaN(p) && nameInput) { appData.penaltyRewards.push({ points: p, text: nameInput.trim() }); saveCloudData(); updateAllUI(); }
+            if (!isNaN(p) && nameInput) { appData.penaltyRewards.push({ points: p, text: nameInput.trim() }); saveLocalData(); }
         } else if (choice === "2") {
             const indexInput = prompt("Nummer zum Löschen:");
             const idx = parseInt(indexInput) - 1;
-            if (!isNaN(idx) && idx >= 0 && idx < appData.penaltyRewards.length) { appData.penaltyRewards.splice(idx, 1); saveCloudData(); updateAllUI(); }
+            if (!isNaN(idx) && idx >= 0 && idx < appData.penaltyRewards.length) { appData.penaltyRewards.splice(idx, 1); saveLocalData(); }
         }
     }
 
@@ -656,17 +473,15 @@
         const enteredPin = prompt("Eltern-PIN eingeben:");
         if (enteredPin !== PARENT_PIN) return;
         const action = prompt(`Strafkonto-Verwaltung:\n[1] Strafpunkte auf 0 setzen (Reset)\n[2] Strafpunkte manuell ändern`);
-        if (action === "1") { appData.penaltyPoints = 0; saveCloudData(); updateAllUI(); alert("Zurückgesetzt!"); } 
+        if (action === "1") { appData.penaltyPoints = 0; saveLocalData(); alert("Zurückgesetzt!"); } 
         else if (action === "2") {
             const newVal = prompt("Neuer Wert (Max 200):", appData.penaltyPoints);
             const parsed = parseInt(newVal);
-            if (!isNaN(parsed)) { appData.penaltyPoints = Math.min(200, Math.max(0, parsed)); saveCloudData(); updateAllUI(); }
+            if (!isNaN(parsed)) { appData.penaltyPoints = Math.min(200, Math.max(0, parsed)); saveLocalData(); }
         }
     }
 
-    window.onload = function() {
-        window.initFirebaseApp();
-    };
+    initApp();
 </script>
 
 </body>
