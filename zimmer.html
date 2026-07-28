@@ -58,7 +58,7 @@
         
         .sync-status { font-size: 12px; color: #059669; margin-bottom: 10px; font-weight: 600; text-align: center; }
 
-        /* Foto Modal für Großansicht */
+        /* Bild-Vollbild Modal */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
         .modal img { max-width: 90%; max-height: 90%; border-radius: 8px; border: 3px solid white; }
         .modal-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; }
@@ -175,6 +175,9 @@
                 <input type="text" id="t0_name" placeholder="Name der Aufgabe">
                 <label style="font-size:0.8rem;">Punkte:</label>
                 <input type="text" id="t0_points" placeholder="Punkte">
+                <label style="font-size:0.75rem; display:flex; align-items:center; gap:5px; margin-top:4px; cursor:pointer;">
+                    <input type="checkbox" id="t0_reqPhoto"> 📸 Foto-Nachweis für diese Aufgabe erforderlich
+                </label>
             </div>
 
             <div class="task-input-group">
@@ -182,6 +185,9 @@
                 <input type="text" id="t1_name" placeholder="Name der Aufgabe">
                 <label style="font-size:0.8rem;">Punkte:</label>
                 <input type="text" id="t1_points" placeholder="Punkte">
+                <label style="font-size:0.75rem; display:flex; align-items:center; gap:5px; margin-top:4px; cursor:pointer;">
+                    <input type="checkbox" id="t1_reqPhoto"> 📸 Foto-Nachweis für diese Aufgabe erforderlich
+                </label>
             </div>
 
             <div class="task-input-group">
@@ -189,6 +195,17 @@
                 <input type="text" id="t2_name" placeholder="Name der Aufgabe">
                 <label style="font-size:0.8rem;">Punkte:</label>
                 <input type="text" id="t2_points" placeholder="Punkte">
+                <label style="font-size:0.75rem; display:flex; align-items:center; gap:5px; margin-top:4px; cursor:pointer;">
+                    <input type="checkbox" id="t2_reqPhoto"> 📸 Foto-Nachweis für diese Aufgabe erforderlich
+                </label>
+            </div>
+
+            <div style="margin-top: 8px; margin-bottom: 8px; padding: 8px; background: #fffdf0; border: 1px dashed #f39c12; border-radius: 6px;">
+                <label style="font-size:0.8rem; font-weight:bold; color:#d35400;">⭐ Bonus-Aufgabe (Fix 8 Pkt):</label>
+                <input type="text" id="bonus_config_name" placeholder="Name der Bonus-Aufgabe">
+                <label style="font-size:0.75rem; display:flex; align-items:center; gap:5px; margin-top:4px; cursor:pointer;">
+                    <input type="checkbox" id="bonus_reqPhoto"> 📸 Foto-Nachweis für Bonus erforderlich
+                </label>
             </div>
 
             <div style="display:flex; gap:8px;">
@@ -208,7 +225,7 @@
             </div>
 
             <div style="margin-top: 15px; border-top: 1px solid #fab1a0; padding-top: 10px;">
-                <button class="action-btn btn-danger" onclick="resetWeekForNewPlan()">🔄 Woche zurücksetzen (für neuen Plan)</button>
+                <button class="action-btn btn-danger" onclick="resetWeekForNewPlan()">🔄 Neuen Wochenplan erstellen (Alle Felder leeren)</button>
             </div>
         </div>
     </div>
@@ -248,13 +265,13 @@
             { points: 100, text: "Samstag ohne Handy / PC ab 20 Uhr 📵" }
         ],
         weekData: {
-            Mo: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "" } },
-            Di: { tasks: [{ name: "Müll rausbringen", points: 5, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "" } },
-            Mi: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "" } },
-            Do: { tasks: [{ name: "Schreibtisch aufräumen", points: 5, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "" } },
-            Fr: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "" } },
-            Sa: { tasks: [{ name: "Garten helfen", points: 10, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "" } },
-            So: { tasks: [{ name: "Ausruhen / Aufräumen", points: 3, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "" } }
+            Mo: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: true }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "", requirePhoto: false } },
+            Di: { tasks: [{ name: "Müll rausbringen", points: 5, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: true }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "", requirePhoto: false } },
+            Mi: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: true }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "", requirePhoto: false } },
+            Do: { tasks: [{ name: "Schreibtisch aufräumen", points: 5, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: true }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "", requirePhoto: false } },
+            Fr: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: true }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "", requirePhoto: false } },
+            Sa: { tasks: [{ name: "Garten helfen", points: 10, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: true }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "", requirePhoto: false } },
+            So: { tasks: [{ name: "Ausruhen / Aufräumen", points: 3, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }], bonusTask: { name: "", status: "open", awardedPoints: 0, photo: "", requirePhoto: false } }
         }
     };
 
@@ -288,9 +305,15 @@
             if (!keepInputs) {
                 document.getElementById(`t${i}_name`).value = tasks[i].name;
                 document.getElementById(`t${i}_points`).value = tasks[i].points > 0 ? tasks[i].points : '';
+                document.getElementById(`t${i}_reqPhoto`).checked = !!tasks[i].requirePhoto;
             }
             let val = tasks[i].status === 'open' || tasks[i].status === 'submitted' ? 'pending' : tasks[i].status;
             document.getElementById(`eval_${i}`).value = val;
+        }
+
+        if (!keepInputs) {
+            document.getElementById('bonus_config_name').value = dayData.bonusTask ? dayData.bonusTask.name : '';
+            document.getElementById('bonus_reqPhoto').checked = dayData.bonusTask ? !!dayData.bonusTask.requirePhoto : false;
         }
 
         let bonusVal = dayData.bonusTask && (dayData.bonusTask.status === 'open' || dayData.bonusTask.status === 'submitted') ? 'pending' : (dayData.bonusTask ? dayData.bonusTask.status : 'pending');
@@ -311,14 +334,23 @@
             hasActiveTasks = true;
 
             let btnClass = "action-btn btn-green";
-            let btnText = "⚔️ Mission erfüllt & Foto hochladen!";
+            let btnText = task.requirePhoto ? "⚔️ Mission erfüllt & Foto senden!" : "⚔️ Mission erfüllt!";
             if(task.status === 'submitted') { btnClass = "action-btn btn-disabled"; btnText = "⏳ Wartet auf Meister-Prüfung..."; } 
             else if(task.status === 'approved' || task.status === 'partial') { btnClass = "action-btn btn-disabled"; btnText = "✅ Geprüft & Punkte gutgeschrieben!"; } 
             else if(task.status === 'rejected') { btnClass = "action-btn btn-danger"; btnText = "❌ Abgelehnt – Neu einreichen"; }
 
-            let photoHTML = "";
-            if (task.photo) {
-                photoHTML = `<div style="margin-top:8px;"><span style="font-size:0.75rem; color:#636e72;">Foto-Nachweis (zum Vergrößern anklicken):</span><br><img src="${task.photo}" class="photo-preview" onclick="openModal('${task.photo}')"></div>`;
+            let photoSection = "";
+            if (task.requirePhoto) {
+                let photoHTML = task.photo ? `<div style="margin-top:6px;"><img src="${task.photo}" class="photo-preview" onclick="openModal('${task.photo}')"></div>` : `<div style="font-size:0.75rem; color:#c0392b; margin-top:2px;">⚠️ Beweisfoto erforderlich!</div>`;
+                photoSection = `
+                    <div style="margin-top: 8px; border-top:1px dashed #dfe6e9; padding-top:6px;">
+                        <label style="font-size:0.75rem; font-weight:bold; display:block; margin-bottom:2px;">📸 Beweisfoto hochladen:</label>
+                        <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index}, false)" style="font-size:0.75rem; width:100%;">
+                        ${photoHTML}
+                    </div>
+                `;
+            } else if (task.photo) {
+                photoSection = `<div style="margin-top:6px;"><span style="font-size:0.75rem; color:#636e72;">Foto-Nachweis:</span><br><img src="${task.photo}" class="photo-preview" onclick="openModal('${task.photo}')"></div>`;
             }
 
             const card = document.createElement('div');
@@ -331,45 +363,47 @@
                     <button class="smiley-btn" onclick="selectSmiley(this, 'ok')">⚡ Geht so</button>
                     <button class="smiley-btn" onclick="selectSmiley(this, 'not')">❌ Nicht</button>
                 </div>
-                <div style="margin-top: 8px;">
-                    <label style="font-size:0.75rem; font-weight:bold; display:block; margin-bottom:2px;">📸 Beweisfoto hochladen:</label>
-                    <input type="file" accept="image/*" onchange="handlePhotoUpload(event, ${index}, false)" style="font-size:0.75rem; width:100%;">
-                </div>
-                ${photoHTML}
+                ${photoSection}
                 <button class="${btnClass}" style="font-size:0.9rem; padding:8px; margin-top:10px;" ${task.status === 'approved' || task.status === 'partial' || task.status === 'submitted' ? 'disabled' : ''} onclick="submitTaskForReview(${index})">${btnText}</button>
             `;
             container.appendChild(card);
         });
 
-        if (!dayData.bonusTask) dayData.bonusTask = { name: "", status: "open", awardedPoints: 0, photo: "" };
+        if (!dayData.bonusTask) dayData.bonusTask = { name: "", status: "open", awardedPoints: 0, photo: "", requirePhoto: false };
         let bTask = dayData.bonusTask;
-        let bBtnClass = "action-btn btn-green";
-        let bBtnText = "⭐ Bonus-Aufgabe mit Foto einreichen (+8 Pkt)!";
-        if(bTask.status === 'submitted') { bBtnClass = "action-btn btn-disabled"; bBtnText = "⏳ Bonus wartet auf Prüfung..."; } 
-        else if(bTask.status === 'approved' || bTask.status === 'partial') { bBtnClass = "action-btn btn-disabled"; bBtnText = "✅ Bonus geprüft!"; }
+        if(bTask.name && bTask.name.trim()) {
+            let bBtnClass = "action-btn btn-green";
+            let bBtnText = bTask.requirePhoto ? "⭐ Bonus-Aufgabe mit Foto einreichen (+8 Pkt)!" : "⭐ Bonus-Aufgabe einreichen (+8 Pkt)!";
+            if(bTask.status === 'submitted') { bBtnClass = "action-btn btn-disabled"; bBtnText = "⏳ Bonus wartet auf Prüfung..."; } 
+            else if(bTask.status === 'approved' || bTask.status === 'partial') { bBtnClass = "action-btn btn-disabled"; bBtnText = "✅ Bonus geprüft!"; }
 
-        let bPhotoHTML = "";
-        if (bTask.photo) {
-            bPhotoHTML = `<div style="margin-top:8px;"><span style="font-size:0.75rem; color:#636e72;">Foto-Nachweis (zum Vergrößern anklicken):</span><br><img src="${bTask.photo}" class="photo-preview" onclick="openModal('${bTask.photo}')"></div>`;
+            let bPhotoSection = "";
+            if (bTask.requirePhoto) {
+                let bPhotoHTML = bTask.photo ? `<div style="margin-top:6px;"><img src="${bTask.photo}" class="photo-preview" onclick="openModal('${bTask.photo}')"></div>` : `<div style="font-size:0.75rem; color:#c0392b; margin-top:2px;">⚠️ Beweisfoto für Bonus erforderlich!</div>`;
+                bPhotoSection = `
+                    <div style="margin-top: 8px; border-top:1px dashed #f39c12; padding-top:6px;">
+                        <label style="font-size:0.75rem; font-weight:bold; display:block; margin-bottom:2px;">📸 Beweisfoto hochladen:</label>
+                        <input type="file" accept="image/*" onchange="handlePhotoUpload(event, 0, true)" style="font-size:0.75rem; width:100%;">
+                        ${bPhotoHTML}
+                    </div>
+                `;
+            } else if (bTask.photo) {
+                bPhotoSection = `<div style="margin-top:6px;"><span style="font-size:0.75rem; color:#636e72;">Foto-Nachweis:</span><br><img src="${bTask.photo}" class="photo-preview" onclick="openModal('${bTask.photo}')"></div>`;
+            }
+
+            const bonusCard = document.createElement('div');
+            bonusCard.className = 'bonus-card';
+            bonusCard.innerHTML = `
+                <div style="font-weight:bold; color:#d35400; font-size:0.95rem; margin-bottom:6px;">⭐ Bonus-Aufgabe (8 Pkt)</div>
+                <div style="font-size:0.85rem; margin-bottom:6px;">${bTask.name}</div>
+                ${bPhotoSection}
+                <button class="${bBtnClass}" style="font-size:0.85rem; padding:8px; margin-top:8px;" ${bTask.status === 'approved' || bTask.status === 'partial' || bTask.status === 'submitted' ? 'disabled' : ''} onclick="submitBonusForReview()">${bBtnText}</button>
+            `;
+            container.appendChild(bonusCard);
         }
-
-        const bonusCard = document.createElement('div');
-        bonusCard.className = 'bonus-card';
-        bonusCard.innerHTML = `
-            <div style="font-weight:bold; color:#d35400; font-size:0.95rem; margin-bottom:6px;">⭐ Bonus-Aufgabe (8 Pkt)</div>
-            <input type="text" id="bonusTaskInput" placeholder="Extraleistung eintragen..." value="${bTask.name || ''}" ${bTask.status === 'approved' || bTask.status === 'partial' || bTask.status === 'submitted' ? 'disabled' : ''} oninput="updateBonusName(this.value)">
-            <div style="margin-top: 8px;">
-                <label style="font-size:0.75rem; font-weight:bold; display:block; margin-bottom:2px;">📸 Beweisfoto hochladen:</label>
-                <input type="file" accept="image/*" onchange="handlePhotoUpload(event, 0, true)" style="font-size:0.75rem; width:100%;">
-            </div>
-            ${bPhotoHTML}
-            <button class="${bBtnClass}" style="font-size:0.85rem; padding:8px; margin-top:8px;" ${bTask.status === 'approved' || bTask.status === 'partial' || bTask.status === 'submitted' ? 'disabled' : ''} onclick="submitBonusForReview()">${bBtnText}</button>
-        `;
-        container.appendChild(bonusCard);
 
         if(!hasActiveTasks && (!bTask.name || !bTask.name.trim())) {
             container.innerHTML = `<div class="box" style="text-align:center; color:#636e72;">Keine Aufgaben für diesen Tag. ⛩️</div>`;
-            container.appendChild(bonusCard);
         }
     }
 
@@ -440,28 +474,49 @@
         for(let i = 0; i < 3; i++) {
             const name = document.getElementById(`t${i}_name`).value.trim();
             const points = parseInt(document.getElementById(`t${i}_points`).value) || 0;
+            const requirePhoto = document.getElementById(`t${i}_reqPhoto`).checked;
             const existing = appData.weekData[activeDay].tasks[i] || { status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "" };
-            tasks.push({ name, points, status: existing.status, awardedPoints: existing.awardedPoints, penaltyAdded: existing.penaltyAdded || 0, photo: existing.photo || "" });
+            tasks.push({ name, points, status: existing.status, awardedPoints: existing.awardedPoints, penaltyAdded: existing.penaltyAdded || 0, photo: existing.photo || "", requirePhoto });
         }
         appData.weekData[activeDay].tasks = tasks;
+
+        const bonusName = document.getElementById('bonus_config_name').value.trim();
+        const bonusReqPhoto = document.getElementById('bonus_reqPhoto').checked;
+        const existingBonus = appData.weekData[activeDay].bonusTask || { status: "open", awardedPoints: 0, photo: "" };
+        appData.weekData[activeDay].bonusTask = { name: bonusName, status: existingBonus.status, awardedPoints: existingBonus.awardedPoints, photo: existingBonus.photo || "", requirePhoto: bonusReqPhoto };
+
         saveCloudData();
-        alert("Aufgaben gespeichert!");
+        alert("Aufgaben für " + activeDay + " gespeichert!");
     }
 
     function setNoTasksForDay() {
         appData.weekData[activeDay] = {
-            tasks: [{name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0,photo:""},{name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0,photo:""},{name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0,photo:""}],
-            bonusTask: {name:"",status:"open",awardedPoints:0,photo:""}
+            tasks: [{name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0,photo:"",requirePhoto:false},{name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0,photo:"",requirePhoto:false},{name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0,photo:"",requirePhoto:false}],
+            bonusTask: {name:"",status:"open",awardedPoints:0,photo:"",requirePhoto:false}
         };
         saveCloudData();
         switchDay(activeDay);
     }
 
-    function updateBonusName(val) { appData.weekData[activeDay].bonusTask.name = val; saveCloudData(); }
-    function submitTaskForReview(index) { appData.weekData[activeDay].tasks[index].status = 'submitted'; saveCloudData(); renderTasksForChild(); }
+    function submitTaskForReview(index) {
+        const task = appData.weekData[activeDay].tasks[index];
+        if (task.requirePhoto && !task.photo) {
+            alert("Für diese Aufgabe ist ein Beweisfoto erforderlich! Bitte lade erst ein Foto hoch.");
+            return;
+        }
+        task.status = 'submitted'; 
+        saveCloudData(); 
+        renderTasksForChild(); 
+    }
+
     function submitBonusForReview() { 
-        if(!appData.weekData[activeDay].bonusTask.name) return; 
-        appData.weekData[activeDay].bonusTask.status = 'submitted'; 
+        const bTask = appData.weekData[activeDay].bonusTask;
+        if(!bTask.name) return; 
+        if (bTask.requirePhoto && !bTask.photo) {
+            alert("Für die Bonus-Aufgabe ist ein Beweisfoto erforderlich! Bitte lade erst ein Foto hoch.");
+            return;
+        }
+        bTask.status = 'submitted'; 
         saveCloudData(); 
         renderTasksForChild();
     }
@@ -497,15 +552,20 @@
     }
 
     function resetWeekForNewPlan() {
-        const enteredPin = prompt("Eltern-PIN eingeben:");
-        if (enteredPin !== PARENT_PIN) return;
+        const enteredPin = prompt("Eltern-PIN eingeben (Leert alle Aufgaben für einen neuen Plan):");
+        if (enteredPin !== PARENT_PIN) { if(enteredPin !== null) alert("Falsche PIN!"); return; }
+        
         for (let day in appData.weekData) {
-            appData.weekData[day].tasks.forEach(t => { t.status = "open"; t.awardedPoints = 0; t.penaltyAdded = 0; t.photo = ""; });
-            if (appData.weekData[day].bonusTask) appData.weekData[day].bonusTask = { name: "", status: "open", awardedPoints: 0, photo: "" };
+            appData.weekData[day].tasks = [
+                { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false },
+                { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false },
+                { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0, photo: "", requirePhoto: false }
+            ];
+            appData.weekData[day].bonusTask = { name: "", status: "open", awardedPoints: 0, photo: "", requirePhoto: false };
         }
         saveCloudData();
         updateAllUI();
-        alert("Woche zurückgesetzt!");
+        alert("Alle Aufgaben wurden geleert! Du kannst nun den neuen Plan eintragen.");
     }
 
     function reducePenaltyWithPoints() {
