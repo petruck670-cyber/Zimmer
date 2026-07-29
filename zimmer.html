@@ -161,8 +161,11 @@
     
     <div class="penalty-box">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span>⚠️ Strafpunkte: <span id="penaltyPoints" style="font-size:1.1rem;">0</span> / 200 Pkt</span>
+            <span>⚠️ Strafpunkte: <span id="penaltyPoints" style="font-size:1.1rem;">0</span> / <span id="maxPenaltyLimitDisplay">200</span> Pkt</span>
             <button onclick="reducePenaltyWithPoints()" style="padding:4px 8px; font-size:0.75rem; background:#c0392b; color:white; border:none; border-radius:6px; cursor:pointer;" id="reducePenaltyBtn">🥋 Mit 30 Pkt abbauen (-10)</button>
+        </div>
+        <div style="font-size: 0.8rem; background: rgba(255,255,255,0.6); padding: 4px; border-radius: 6px; color: #c0392b;">
+            🚨 Bei Erreichen: <span id="penaltyActionDisplay">1 Woche PC aus</span>
         </div>
         <button onclick="editPenaltySettingsWithPin()" style="width:100%; padding:6px; font-size:0.8rem; background:#e17055; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">⚙️ Strafkonto bearbeiten / Reset (Admin-PIN)</button>
     </div>
@@ -231,6 +234,8 @@
         penaltyPoints: 0,
         penaltyCost: 30,
         penaltyReduction: 10,
+        maxPenaltyLimit: 200,
+        penaltyActionText: "1 Woche PC aus",
         rewards: [
             { points: 100, text: "Ninjago Comic / Zeitschrift" },
             { points: 300, text: "2 € Taschengeld" },
@@ -255,6 +260,8 @@
     function updateAllUI() {
         document.getElementById('totalPoints').innerText = appData.totalPoints;
         document.getElementById('penaltyPoints').innerText = appData.penaltyPoints || 0;
+        document.getElementById('maxPenaltyLimitDisplay').innerText = appData.maxPenaltyLimit || 200;
+        document.getElementById('penaltyActionDisplay').innerText = appData.penaltyActionText || "1 Woche PC aus";
         document.getElementById('reducePenaltyBtn').innerText = `🥋 Mit ${appData.penaltyCost || 30} Pkt abbauen (-${appData.penaltyReduction || 10})`;
         renderRewardsList();
         renderPenaltyShopList();
@@ -412,6 +419,8 @@
         if (enteredPin !== PARENT_PIN) { if(enteredPin !== null) alert("Falsche PIN!"); return; }
 
         let dayData = appData.weekData[activeDay];
+        let limit = appData.maxPenaltyLimit || 200;
+
         dayData.tasks.forEach((task, index) => {
             if (task.awardedPoints) { appData.totalPoints -= task.awardedPoints; task.awardedPoints = 0; }
             if (task.penaltyAdded) { appData.penaltyPoints = Math.max(0, appData.penaltyPoints - task.penaltyAdded); task.penaltyAdded = 0; }
@@ -419,7 +428,15 @@
             const rating = document.getElementById(`eval_${index}`).value;
             if (rating === 'approved') { task.status = 'approved'; task.awardedPoints = task.points; appData.totalPoints += task.awardedPoints; } 
             else if (rating === 'partial') { task.status = 'partial'; task.awardedPoints = Math.floor(task.points / 2); appData.totalPoints += task.awardedPoints; } 
-            else if (rating === 'rejected') { task.status = 'rejected'; task.awardedPoints = 0; task.penaltyAdded = task.points * 2; appData.penaltyPoints = Math.min(200, appData.penaltyPoints + task.penaltyAdded); } 
+            else if (rating === 'rejected') { 
+                task.status = 'rejected'; 
+                task.awardedPoints = 0; 
+                task.penaltyAdded = task.points * 2; 
+                appData.penaltyPoints = Math.min(limit, appData.penaltyPoints + task.penaltyAdded); 
+                if (appData.penaltyPoints >= limit) {
+                    alert(`🚨 STRAFKONTO-GRENZE ERREICHT (${limit} Pkt)!\nMaßnahme: ${appData.penaltyActionText || "1 Woche PC aus"}`);
+                }
+            } 
             else { task.status = 'open'; }
         });
 
@@ -520,12 +537,40 @@
     function editPenaltySettingsWithPin() {
         const enteredPin = prompt("Eltern-PIN eingeben:");
         if (enteredPin !== PARENT_PIN) return;
-        const action = prompt(`Strafkonto-Verwaltung:\n[1] Strafpunkte auf 0 setzen (Reset)\n[2] Strafpunkte manuell ändern`);
-        if (action === "1") { appData.penaltyPoints = 0; saveCloudData(); updateAllUI(); alert("Zurückgesetzt!"); } 
+        let limit = appData.maxPenaltyLimit || 200;
+        let actionText = appData.penaltyActionText || "1 Woche PC aus";
+        
+        const action = prompt(`Strafkonto-Verwaltung:\n[1] Strafpunkte auf 0 setzen (Reset)\n[2] Strafpunkte manuell ändern\n[3] Grenze & Maßnahme einstellen`);
+        if (action === "1") { 
+            appData.penaltyPoints = 0; 
+            saveCloudData(); 
+            updateAllUI(); 
+            alert("Zurückgesetzt!"); 
+        } 
         else if (action === "2") {
-            const newVal = prompt("Neuer Wert (Max 200):", appData.penaltyPoints);
+            const newVal = prompt(`Neuer Wert (Max ${limit}):`, appData.penaltyPoints);
             const parsed = parseInt(newVal);
-            if (!isNaN(parsed)) { appData.penaltyPoints = Math.min(200, Math.max(0, parsed)); saveCloudData(); updateAllUI(); }
+            if (!isNaN(parsed)) { 
+                appData.penaltyPoints = Math.min(limit, Math.max(0, parsed)); 
+                saveCloudData(); 
+                updateAllUI(); 
+            }
+        }
+        else if (action === "3") {
+            const newLimit = prompt("Neue Punkt-Grenze eingeben:", limit);
+            const parsedLimit = parseInt(newLimit);
+            const newAction = prompt("Maßnahme bei Erreichen eingeben (z.B. Das Bad putzen):", actionText);
+            
+            if (!isNaN(parsedLimit) && parsedLimit > 0) {
+                appData.maxPenaltyLimit = parsedLimit;
+            }
+            if (newAction !== null && newAction.trim() !== "") {
+                appData.penaltyActionText = newAction.trim();
+            }
+            appData.penaltyPoints = Math.min(appData.maxPenaltyLimit, appData.penaltyPoints);
+            saveCloudData();
+            updateAllUI();
+            alert("Straf-Grenze und Maßnahme erfolgreich aktualisiert!");
         }
     }
 
