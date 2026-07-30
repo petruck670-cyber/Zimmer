@@ -142,7 +142,7 @@
 
     <!-- Belohnungs- & Einlöse-Box -->
     <div class="rewards-box">
-        <div class="box-title" style="color:#d35400;">🎁 Wofür Ninja-Punkte einlösen?</div>
+        <div class="box-title" style="color:#d35400;">🎁 Wofür Ninja-Punkte einlösen? <span style="font-size:0.75rem; font-weight:normal; color:#636e72;">(1x pro Monat)</span></div>
         <div id="rewardsListDisplay" style="margin-bottom: 10px;"></div>
         <button class="action-btn btn-orange" onclick="editRewardsWithPin()">⚙️ Prämien-Shop bearbeiten (Admin-PIN)</button>
     </div>
@@ -236,6 +236,7 @@
         penaltyReduction: 10,
         maxPenaltyLimit: 200,
         penaltyActionText: "1 ganzer Tag ohne Computer",
+        lastRedeemMonth: "", // Speichert den Monat der letzten Einlösung (z.B. "2026-6")
         rewards: [
             { points: 500, text: "Lego Set für 30€" },
             { points: 800, text: "1 Stunde Extra-PC-Zeit 🎮" }
@@ -478,12 +479,24 @@
 
     function redeemReward(pointsNeeded, rewardName) {
         if (appData.totalPoints < pointsNeeded) { alert(`Nicht genug Punkte! Du hast ${appData.totalPoints} Pkt.`); return; }
-        const enteredPin = prompt("Eltern-PIN (1985) eingeben:");
-        if (enteredPin !== PARENT_PIN) return;
+
+        // Monats-Prüfung
+        const now = new Date();
+        const currentMonthKey = `${now.getFullYear()}-${now.getMonth()}`; // z.B. "2026-6" für Juli 2026
+
+        if (appData.lastRedeemMonth === currentMonthKey) {
+            let pin = prompt("⚠️ In diesem Monat wurde bereits eine Prämie eingelöst!\n\nUm diese Sperre zu umgehen, gib bitte die Eltern-PIN (1985) ein:");
+            if (pin !== PARENT_PIN) {
+                if (pin !== null) alert("Falsche PIN! Einlösung abgebrochen.");
+                return;
+            }
+        }
+
         appData.totalPoints -= pointsNeeded;
+        appData.lastRedeemMonth = currentMonthKey; // Aktuellen Monat speichern
         saveCloudData();
         updateAllUI();
-        alert(`Prämie "${rewardName}" eingelöst!`);
+        alert(`Prämie "${rewardName}" erfolgreich eingelöst!`);
     }
 
     function redeemPenaltyReward(pointsNeeded, rewardName) {
