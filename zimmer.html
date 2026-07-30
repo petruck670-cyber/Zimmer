@@ -236,7 +236,7 @@
         penaltyReduction: 10,
         maxPenaltyLimit: 200,
         penaltyActionText: "1 ganzer Tag ohne Computer",
-        lastRedeemMonth: "", // Speichert den Monat der letzten Einlösung (z.B. "2026-6")
+        lastRedeemMonth: "",
         rewards: [
             { points: 500, text: "Lego Set für 30€" },
             { points: 800, text: "1 Stunde Extra-PC-Zeit 🎮" }
@@ -246,13 +246,13 @@
             { points: 100, text: "Samstag ohne Handy / PC ab 20 Uhr 📵" }
         ],
         weekData: {
-            Mo: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
-            Di: { tasks: [{ name: "Müll rausbringen", points: 5, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
-            Mi: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
-            Do: { tasks: [{ name: "Schreibtisch aufräumen", points: 5, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
-            Fr: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
-            Sa: { tasks: [{ name: "Garten helfen", points: 10, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
-            So: { tasks: [{ name: "Ausruhen / Aufräumen", points: 3, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } }
+            Mo: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            Di: { tasks: [{ name: "Müll rausbringen", points: 5, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            Mi: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            Do: { tasks: [{ name: "Schreibtisch aufräumen", points: 5, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            Fr: { tasks: [{ name: "Zimmer aufräumen", points: 7, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            Sa: { tasks: [{ name: "Garten helfen", points: 10, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } },
+            So: { tasks: [{ name: "Ausruhen / Aufräumen", points: 3, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }, { name: "", points: 0, status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 }], bonusTask: { name: "", status: "open", awardedPoints: 0 } }
         }
     };
 
@@ -303,11 +303,9 @@
         container.innerHTML = '';
         const dayData = appData.weekData[activeDay];
         const tasks = dayData.tasks;
-        let hasActiveTasks = false;
 
         tasks.forEach((task, index) => {
             if(!task.name.trim()) return;
-            hasActiveTasks = true;
 
             let btnClass = "action-btn btn-green";
             let btnText = "⚔️ Mission erfüllt & bereit für Prüfung!";
@@ -320,10 +318,10 @@
             card.innerHTML = `
                 <div style="font-weight:bold; color:var(--primary); font-size:1rem; margin-bottom:8px;">🥷 ${task.name} (+${task.points} Pkt)</div>
                 <div style="font-size:0.8rem; margin-top:4px;">Selbstkontrolle:</div>
-                <div class="smiley-container">
-                    <button class="smiley-btn" onclick="selectSmiley(this, 'perfect')">🔥 Perfekt</button>
-                    <button class="smiley-btn" onclick="selectSmiley(this, 'ok')">⚡ Geht so</button>
-                    <button class="smiley-btn" onclick="selectSmiley(this, 'not')">❌ Nicht</button>
+                <div class="smiley-container" id="smiley-group-${index}">
+                    <button class="smiley-btn ${task.selfControl === 'perfect' ? 'selected' : ''}" onclick="selectSmiley(${index}, 'perfect')">🔥 Perfekt</button>
+                    <button class="smiley-btn ${task.selfControl === 'ok' ? 'selected' : ''}" onclick="selectSmiley(${index}, 'ok')">⚡ Geht so</button>
+                    <button class="smiley-btn ${task.selfControl === 'not' ? 'selected' : ''}" onclick="selectSmiley(${index}, 'not')">❌ Nicht</button>
                 </div>
                 <button class="${btnClass}" style="font-size:0.9rem; padding:8px; margin-top:10px;" ${task.status === 'approved' || task.status === 'partial' || task.status === 'submitted' ? 'disabled' : ''} onclick="submitTaskForReview(${index})">${btnText}</button>
             `;
@@ -347,9 +345,19 @@
         container.appendChild(bonusCard);
     }
 
-    function selectSmiley(btn, type) {
-        btn.parentElement.querySelectorAll('.smiley-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
+    function selectSmiley(index, type) {
+        appData.weekData[activeDay].tasks[index].selfControl = type;
+        
+        // Optische Markierung sofort aktualisieren ohne Neuladen der ganzen Ansicht
+        const group = document.getElementById(`smiley-group-${index}`);
+        if (group) {
+            group.querySelectorAll('.smiley-btn').forEach(b => b.classList.remove('selected'));
+            if (type === 'perfect') group.children[0].classList.add('selected');
+            if (type === 'ok') group.children[1].classList.add('selected');
+            if (type === 'not') group.children[2].classList.add('selected');
+        }
+        
+        saveCloudData();
     }
 
     function renderRewardsList() {
@@ -389,8 +397,8 @@
         for(let i = 0; i < 3; i++) {
             const name = document.getElementById(`t${i}_name`).value.trim();
             const points = parseInt(document.getElementById(`t${i}_points`).value) || 0;
-            const existing = appData.weekData[activeDay].tasks[i] || { status: "open", awardedPoints: 0, penaltyAdded: 0 };
-            tasks.push({ name, points, status: existing.status, awardedPoints: existing.awardedPoints, penaltyAdded: existing.penaltyAdded || 0 });
+            const existing = appData.weekData[activeDay].tasks[i] || { status: "open", selfControl: "", awardedPoints: 0, penaltyAdded: 0 };
+            tasks.push({ name, points, status: existing.status, selfControl: existing.selfControl || "", awardedPoints: existing.awardedPoints, penaltyAdded: existing.penaltyAdded || 0 });
         }
         appData.weekData[activeDay].tasks = tasks;
         saveCloudData();
@@ -398,9 +406,9 @@
 
     function setNoTasksForDay() {
         appData.weekData[activeDay].tasks = [
-            {name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0},
-            {name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0},
-            {name:"",points:0,status:"open",awardedPoints:0,penaltyAdded:0}
+            {name:"",points:0,status:"open",selfControl:"",awardedPoints:0,penaltyAdded:0},
+            {name:"",points:0,status:"open",selfControl:"",awardedPoints:0,penaltyAdded:0},
+            {name:"",points:0,status:"open",selfControl:"",awardedPoints:0,penaltyAdded:0}
         ];
         saveCloudData();
     }
@@ -457,7 +465,7 @@
         const enteredPin = prompt("Eltern-PIN (1985) eingeben:");
         if (enteredPin !== PARENT_PIN) return;
         for (let day in appData.weekData) {
-            appData.weekData[day].tasks.forEach(t => { t.name = ""; t.points = 0; t.status = "open"; t.awardedPoints = 0; t.penaltyAdded = 0; });
+            appData.weekData[day].tasks.forEach(t => { t.name = ""; t.points = 0; t.status = "open"; t.selfControl = ""; t.awardedPoints = 0; t.penaltyAdded = 0; });
             if (appData.weekData[day].bonusTask) appData.weekData[day].bonusTask = { name: "", status: "open", awardedPoints: 0 };
         }
         saveCloudData();
@@ -480,9 +488,8 @@
     function redeemReward(pointsNeeded, rewardName) {
         if (appData.totalPoints < pointsNeeded) { alert(`Nicht genug Punkte! Du hast ${appData.totalPoints} Pkt.`); return; }
 
-        // Monats-Prüfung
         const now = new Date();
-        const currentMonthKey = `${now.getFullYear()}-${now.getMonth()}`; // z.B. "2026-6" für Juli 2026
+        const currentMonthKey = `${now.getFullYear()}-${now.getMonth()}`;
 
         if (appData.lastRedeemMonth === currentMonthKey) {
             let pin = prompt("⚠️ In diesem Monat wurde bereits eine Prämie eingelöst!\n\nUm diese Sperre zu umgehen, gib bitte die Eltern-PIN (1985) ein:");
@@ -493,7 +500,7 @@
         }
 
         appData.totalPoints -= pointsNeeded;
-        appData.lastRedeemMonth = currentMonthKey; // Aktuellen Monat speichern
+        appData.lastRedeemMonth = currentMonthKey;
         saveCloudData();
         updateAllUI();
         alert(`Prämie "${rewardName}" erfolgreich eingelöst!`);
@@ -586,7 +593,6 @@
     }
 
     window.onload = function() {
-        // Automatische Erkennung des aktuellen Wochentags (0 = Sonntag, 1 = Montag, ..., 6 = Samstag)
         const daysMap = { 0: 'So', 1: 'Mo', 2: 'Di', 3: 'Mi', 4: 'Do', 5: 'Fr', 6: 'Sa' };
         const todayIndex = new Date().getDay();
         activeDay = daysMap[todayIndex] || 'Mo';
