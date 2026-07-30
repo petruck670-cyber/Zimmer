@@ -165,7 +165,7 @@
             <button onclick="reducePenaltyWithPoints()" style="padding:4px 8px; font-size:0.75rem; background:#c0392b; color:white; border:none; border-radius:6px; cursor:pointer;" id="reducePenaltyBtn">🥋 Mit 30 Pkt abbauen (-10)</button>
         </div>
         <div style="font-size: 0.8rem; background: rgba(255,255,255,0.6); padding: 4px; border-radius: 6px; color: #c0392b;">
-            🚨 Bei Erreichen: <span id="penaltyActionDisplay">1 Woche PC aus</span>
+            🚨 Bei Erreichen: <span id="penaltyActionDisplay">1 ganzer Tag ohne Computer</span>
         </div>
         <button onclick="editPenaltySettingsWithPin()" style="width:100%; padding:6px; font-size:0.8rem; background:#e17055; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">⚙️ Strafkonto bearbeiten / Reset (Admin-PIN)</button>
     </div>
@@ -235,15 +235,13 @@
         penaltyCost: 30,
         penaltyReduction: 10,
         maxPenaltyLimit: 200,
-        penaltyActionText: "1 Woche PC aus",
+        penaltyActionText: "1 ganzer Tag ohne Computer",
         rewards: [
-            { points: 100, text: "Ninjago Comic / Zeitschrift" },
-            { points: 300, text: "2 € Taschengeld" },
-            { points: 500, text: "Neues Lego Ninjago Set-Teil" },
+            { points: 500, text: "Lego Set für 30€" },
             { points: 800, text: "1 Stunde Extra-PC-Zeit 🎮" }
         ],
         penaltyRewards: [
-            { points: 50, text: "1 Woche Spülmaschinendienst 🍽️" },
+            { points: 50, text: "1 Woche Spülmaschinendienst" },
             { points: 100, text: "Samstag ohne Handy / PC ab 20 Uhr 📵" }
         ],
         weekData: {
@@ -261,7 +259,7 @@
         document.getElementById('totalPoints').innerText = appData.totalPoints;
         document.getElementById('penaltyPoints').innerText = appData.penaltyPoints || 0;
         document.getElementById('maxPenaltyLimitDisplay').innerText = appData.maxPenaltyLimit || 200;
-        document.getElementById('penaltyActionDisplay').innerText = appData.penaltyActionText || "1 Woche PC aus";
+        document.getElementById('penaltyActionDisplay').innerText = appData.penaltyActionText || "1 ganzer Tag ohne Computer";
         document.getElementById('reducePenaltyBtn').innerText = `🥋 Mit ${appData.penaltyCost || 30} Pkt abbauen (-${appData.penaltyReduction || 10})`;
         renderRewardsList();
         renderPenaltyShopList();
@@ -434,7 +432,7 @@
                 task.penaltyAdded = task.points * 2; 
                 appData.penaltyPoints = Math.min(limit, appData.penaltyPoints + task.penaltyAdded); 
                 if (appData.penaltyPoints >= limit) {
-                    alert(`🚨 STRAFKONTO-GRENZE ERREICHT (${limit} Pkt)!\nMaßnahme: ${appData.penaltyActionText || "1 Woche PC aus"}`);
+                    alert(`🚨 STRAFKONTO-GRENZE ERREICHT (${limit} Pkt)!\nMaßnahme: ${appData.penaltyActionText || "1 ganzer Tag ohne Computer"}`);
                 }
             } 
             else { task.status = 'open'; }
@@ -538,7 +536,7 @@
         const enteredPin = prompt("Eltern-PIN eingeben:");
         if (enteredPin !== PARENT_PIN) return;
         let limit = appData.maxPenaltyLimit || 200;
-        let actionText = appData.penaltyActionText || "1 Woche PC aus";
+        let actionText = appData.penaltyActionText || "1 ganzer Tag ohne Computer";
         
         const action = prompt(`Strafkonto-Verwaltung:\n[1] Strafpunkte auf 0 setzen (Reset)\n[2] Strafpunkte manuell ändern\n[3] Grenze & Maßnahme einstellen`);
         if (action === "1") { 
@@ -559,7 +557,7 @@
         else if (action === "3") {
             const newLimit = prompt("Neue Punkt-Grenze eingeben:", limit);
             const parsedLimit = parseInt(newLimit);
-            const newAction = prompt("Maßnahme bei Erreichen eingeben (z.B. Das Bad putzen):", actionText);
+            const newAction = prompt("Maßnahme bei Erreichen eingeben (z.B. 1 ganzer Tag ohne Computer):", actionText);
             
             if (!isNaN(parsedLimit) && parsedLimit > 0) {
                 appData.maxPenaltyLimit = parsedLimit;
@@ -575,6 +573,11 @@
     }
 
     window.onload = function() {
+        // Automatische Erkennung des aktuellen Wochentags (0 = Sonntag, 1 = Montag, ..., 6 = Samstag)
+        const daysMap = { 0: 'So', 1: 'Mo', 2: 'Di', 3: 'Mi', 4: 'Do', 5: 'Fr', 6: 'Sa' };
+        const todayIndex = new Date().getDay();
+        activeDay = daysMap[todayIndex] || 'Mo';
+
         window.initFirebaseApp();
     };
 </script>
